@@ -6,15 +6,29 @@
 	<link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 <body>
-	<div class="carousel">
-		<div class="images">
-			<img src="./image/1.png" alt="图片">
-			<img src="./image/2.png" alt="图片">
-			<img src="./image/3.png" alt="图片">
-			<img src="./image/4.png" alt="图片">
-			<img src="./image/5.png" alt="图片">
+	<div class="container">
+		<div class="carousel">
+			<div id="slides" class="images">
+				<img src="./image/1.png" alt="图片">
+				<img src="./image/2.png" alt="图片">
+				<img src="./image/3.png" alt="图片">
+				<img src="./image/4.png" alt="图片">
+				<img src="./image/5.png" alt="图片">
+			</div>
+		</div>
+		<div id="controls">
+			<button id="previous">上一张</button>
+			<button id="next">下一张</button>
+		</div>
+		<div id="buttonWrapper">
+			<button >1</button>
+			<button >2</button>
+			<button >3</button>
+			<button >4</button>
+			<button >5</button>
 		</div>
 	</div>
+
 	<script src="./jquery-3.3.1.min.js"></script>
 	<script src="./main.js"></script>
 </body>

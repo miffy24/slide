@@ -1,52 +1,70 @@
-let n
-getInit()
-let timer = setInterval(()=>{
-	makeLeave(getImage(n))
-    .one('transitionend', (e)=>{
-      makeEnter($(e.currentTarget))
-    })
- 	makeCurrent(getImage(n+1))
-  	n += 1
-},2000)
+let $buttons = $('#buttonWrapper>button')
+let $slides = $('#slides')
+let $images = $slides.children('img')
+let current = 0
 
-document.addEventListener('visibilitychange', function(e){
-	if(document.hidden){
-		window.clearInterval(timer)
-	}else{
-		timer = setInterval(()=>{
-			makeLeave(getImage(n))
-    		.one('transitionend', (e)=>{
-      			makeEnter($(e.currentTarget))
-    		})
-  		makeCurrent(getImage(n+1))
- 		n += 1
-		},2000)
-	}
+makeFakeSlides()
+$slides.css({transform:`translateX(-400px)`})
+bindEvents()
+$(next).on('click',function(){
+	goToSlide(current+1)
 })
-function getImage(n){
-	return $(`.images >img:nth-child(${x(n)})`)
+$(previous).on('click',function(){
+	goToSlide(current-1)
+})
+let timer =setInterval(function(){
+	goToSlide(current+1)
+},4000)
+$('.container').on('mouseenter',function(){
+	window.clearInterval(timer)
+	console.log(1)
+}).on('mouseleave',function(){
+	 timer = setInterval(function(){
+		goToSlide(current+1)
+	},4000)
+})
+function bindEvents(){
+	$('#buttonWrapper').on('click','button',function(e){
+		let $button = $(e.currentTarget)
+		let index  = $button.index()
+		goToSlide(index)
+	})
 }
-function x(n){
-	if(n > 5){
-		n = n % 5
-		if(n === 0){
-			n = 5
-		}
+function goToSlide(index){
+	if(index > $buttons.length-1){
+		index = 0
+	}else if(index < 0){
+		index = $buttons.length - 1
 	}
-	return n
-}
-function getInit(){
-	n = 1
-	$(`.images >img:nth-child(${n})`).addClass('current')
-	.siblings().addClass('enter')
-}
+	console.log('current', 'index')
+    console.log(current, index)
+	if(current === $buttons.length - 1 && index === 0 ){
+		//最后一张到第一张
+		$slides.css({transform:`translateX(${-($buttons.length+1)*400}px)`})
+		.one('transitionend',function(){
+			$slides.hide()
+			$slides.offset()
+			$slides.css({transform:`translateX(${-(index+1)*400}px)`}).show()
+		})
+	}else if(current === 0 && index === $buttons.length-1){
+		//第一张到最后一张
+		$slides.css({transform:`translateX(0px)`})
+		.one('transitionend',function(){
+			$slides.hide()
+			$slides.offset()
+			$slides.css({transform:`translateX(${-(index+1)*400}px)`}).show()
+		})
 
-function makeCurrent($node){
-	return $node.removeClass('enter leave').addClass('current')
+	}else{
+		$slides.css({transform:`translateX(${-(index+1)*400}px)`})
+
+	}
+	current = index
 }
-function makeLeave($node){
-	return $node.removeClass('enter current').addClass('leave')
-}
-function makeEnter($node){
-	return $node.removeClass('leave current ').addClass('enter')
+function makeFakeSlides(){
+	$firstCopy =$images.eq(0).clone(true)
+	$lastCopy =$images.eq($images.length-1).clone(true)
+
+	$slides.append($firstCopy)
+	$slides.prepend($lastCopy)
 }
